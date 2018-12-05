@@ -6,8 +6,8 @@ import (
 )
 
 func TestBlendFruit(t *testing.T) {
-	output, outputLiter, err := Blend("apple", 1.0)
-	assert.Equal(t, "apple juice", output)
+	output, outputLiter, err := Blend("water melon", 1.0)
+	assert.Equal(t, "water melon juice", output)
 	assert.Equal(t, 0.8, outputLiter)
 	assert.Nil(t, err)
 }
@@ -21,15 +21,5 @@ func TestBlendWater(t *testing.T) {
 
 func TestBlendRock(t *testing.T) {
 	_, _, err := Blend("rock", 1.0)
-	assert.NotNil(t, err)
-}
-
-func TestBlendPanda(t *testing.T) {
-	_, _, err := Blend("panda", 1.0)
-	assert.NotNil(t, err)
-}
-
-func TestBlendSuperman(t *testing.T) {
-	_, _, err := Blend("superman", 1.0)
 	assert.NotNil(t, err)
 }
