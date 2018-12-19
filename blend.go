@@ -6,37 +6,25 @@ import (
 )
 
 type Blender struct {
-	Capacity float64
+	Container Container
 }
 
-func (b *Blender) Blend(substance string, inputLiter float64) (output string, outputLiter float64, err error) {
-	s, err := createSubstance(substance, inputLiter)
-	if err != nil {
-		return
-	}
-
-	liquid, err := b.BlendSubstance(s)
-	if err != nil {
-		return
-	}
-	output = liquid.Name()
-	outputLiter = liquid.Liter()
-	return
+func (b *Blender) SetContainer(c Container) {
+	b.Container = c
 }
 
-func (b *Blender) BlendSubstance(s Substance) (LiquidPhase, error) {
-	if s.IsOverflow(b.Capacity) {
-		return nil, errors.New("overflow")
-	}
+func (b *Blender) Blend() error {
+	s := b.Container.PourOut()
+	var liquid LiquidPhase
 	switch s.(type) {
 	case Liquable:
 		{
-			liquid := (s.(Liquable)).Liquefy()
-			return liquid, nil
+			liquid = (s.(Liquable)).Liquefy()
 		}
 	default:
-		return nil, errors.New(fmt.Sprintf("cannot blend %s", s))
+		return errors.New(fmt.Sprintf("cannot blend %s", s))
 	}
+	return b.Container.PutIn(liquid)
 }
 
 func createSubstance(substance string, inputLiter float64) (Substance, error) {
