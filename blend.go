@@ -6,11 +6,20 @@ import (
 )
 
 type Blender struct {
-	Container Container
+	Container   Container
+	Bubble      Bubble
+	PowerSource PowerSource
+	Voltage     int
+	Ampere      float32
+	PlugShape   string
 }
 
 func (b *Blender) SetContainer(c Container) {
 	b.Container = c
+}
+
+func (b *Blender) SetBubble(bubble Bubble) {
+	b.Bubble = bubble
 }
 
 func (b *Blender) Blend() error {

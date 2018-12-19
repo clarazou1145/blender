@@ -7,6 +7,18 @@ type container struct {
 	substance Substance
 }
 
+func (c *container) Remains() float64 {
+	panic("implement me")
+}
+
+func (c *container) Open() {
+	panic("implement me")
+}
+
+func (c *container) Close() {
+	panic("implement me")
+}
+
 func (c *container) Capacity() float64 {
 	return c.capacity
 }
@@ -37,4 +49,7 @@ type Container interface {
 	Capacity() float64
 	PutIn(s Substance) error
 	PourOut() Substance
+	Remains() float64
+	Open()
+	Close()
 }
