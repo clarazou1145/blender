@@ -50,12 +50,6 @@ func TestBlendWater(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, 1.0, water.liter)
 }
-func TestOverflow(t *testing.T) {
-	overflowWater := NewWater(capacity + 1)
-	container := NewContainer(capacity)
-	err := container.PutIn(overflowWater)
-	assert.NotNil(t, err)
-}
 func setupContainer(t *testing.T, substance string, volume float64) Container {
 	waterMelon, err := createSubstance(substance, volume)
 	assert.Nil(t, err)
