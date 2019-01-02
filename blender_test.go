@@ -6,9 +6,10 @@ import (
 	"testing"
 )
 
+//go:generate mockgen -package=blender -destination=./mock_bubble.go github.com/lonegunmanb/blender Bubble
 const capacity = 10.0
 
-var sut = &Blender{}
+var sut = NewBlender(&bubble{})
 
 func TestBlend(t *testing.T) {
 	water, err := createSubstance("water", capacity)
@@ -50,6 +51,22 @@ func TestBlendWater(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, 1.0, water.liter)
 }
+
+func TestBlenderOperateBubble(t *testing.T) {
+	_ = setupContainer(t, "water", 1.0)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockBubble := NewMockBubble(ctrl)
+	turnOn := mockBubble.EXPECT().TurnOn().Times(1)
+	setRed := mockBubble.EXPECT().SetColor("red").Times(1).Return(nil).After(turnOn)
+	setGreen := mockBubble.EXPECT().SetColor("green").Times(1).Return(nil).After(setRed)
+	mockBubble.EXPECT().TurnOff().Times(1).After(setGreen)
+	sut.Bubble = mockBubble
+
+	err := sut.Blend()
+	assert.Nil(t, err)
+}
+
 func setupContainer(t *testing.T, substance string, volume float64) Container {
 	waterMelon, err := createSubstance(substance, volume)
 	assert.Nil(t, err)

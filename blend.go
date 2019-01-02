@@ -14,6 +14,13 @@ type Blender struct {
 	PlugShape   string
 }
 
+func NewBlender(bubble Bubble) *Blender {
+	if bubble == nil {
+		panic("bubble is nil")
+	}
+	return &Blender{Bubble: bubble}
+}
+
 func (b *Blender) SetContainer(c Container) {
 	b.Container = c
 }
@@ -28,12 +35,42 @@ func (b *Blender) Blend() error {
 	switch s.(type) {
 	case Liquable:
 		{
-			liquid = (s.(Liquable)).Liquefy()
+			l, err := b.liquefy(s.(Liquable))
+			if err != nil {
+				return err
+			}
+			liquid = l
 		}
 	default:
 		return errors.New(fmt.Sprintf("cannot blend %s", s))
 	}
 	return b.Container.PutIn(liquid)
+}
+
+func (b *Blender) liquefy(liquable Liquable) (LiquidPhase, error) {
+	var liquid LiquidPhase
+	err := operateBubbleAroundAction(b.Bubble, func() {
+		liquid = liquable.Liquefy()
+	})
+	if err != nil {
+		return nil, err
+	}
+	return liquid, nil
+}
+
+func operateBubbleAroundAction(bubble Bubble, action func()) error {
+	bubble.TurnOn()
+	err := bubble.SetColor("red")
+	if err != nil {
+		return err
+	}
+	action()
+	err = bubble.SetColor("green")
+	if err != nil {
+		return err
+	}
+	bubble.TurnOff()
+	return nil
 }
 
 func createSubstance(substance string, inputLiter float64) (Substance, error) {
